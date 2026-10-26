@@ -1,0 +1,11 @@
+{
+  "max_words": 20000,
+  "max_length": 150,
+  "classes": [
+    "Negative",
+    "Neutral",
+    "Positive"
+  ],
+  "accuracy": 0.708,
+  "macro_f1": 0.6794406859669332
+}

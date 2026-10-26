@@ -1,0 +1,29 @@
+# Python virtual environments
+.venv/
+.venv312/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Local datasets and generated CSV files
+data/raw/
+data/processed/
+*.csv
+
+# Secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Editor and system files
+.vscode/
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
+
+# Logs
+*.log
