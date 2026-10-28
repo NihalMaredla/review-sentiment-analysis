@@ -5,11 +5,11 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-LSTM-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Scikit--learn-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![Live Demo](https://img.shields.io/badge/Live-Demo-success?logo=streamlit)](https://review-sentiment-analysis-hvpuc3cc3dg2tpkauyovl.streamlit.app/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?logo=streamlit)](https://reviewsense-nihal-demo.streamlit.app/)
 
 **ReviewSense** is a sentiment-analysis web application that classifies text as **Positive**, **Neutral**, or **Negative**. It combines traditional machine learning and deep learning with speech transcription, allowing users to analyze written reviews, audio recordings, and videos containing speech.
 
-**🚀 Live Demo:** [Open ReviewSense](https://review-sentiment-analysis-hvpuc3cc3dg2tpkauyovl.streamlit.app/)
+**🚀 Live Demo:** [Open ReviewSense](https://reviewsense-nihal-demo.streamlit.app/)
 
 **📂 Repository:** [View the source code on GitHub](https://github.com/NihalMaredla/review-sentiment-analysis)
 
