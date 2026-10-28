@@ -1,5 +1,7 @@
 from pathlib import Path
 import tempfile
+import subprocess
+import shutil
 
 import joblib
 import numpy as np
@@ -128,6 +130,52 @@ def transcribe_audio(audio_bytes, suffix):
             Path(audio_path).unlink(missing_ok=True)
 
 
+def transcribe_video(video_bytes, suffix):
+    """Extract a video's audio with FFmpeg, transcribe it, and clean temp files."""
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        raise RuntimeError(
+            "FFmpeg was not found. Install FFmpeg and add its bin folder to PATH, "
+            "then restart the terminal/Streamlit app."
+        )
+
+    video_path = None
+    audio_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            suffix=suffix or ".mp4", delete=False
+        ) as video_file:
+            video_file.write(video_bytes)
+            video_path = video_file.name
+
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as audio_file:
+            audio_path = audio_file.name
+
+        command = [
+            ffmpeg, "-y", "-i", video_path, "-vn", "-ac", "1",
+            "-ar", "16000", "-c:a", "pcm_s16le", audio_path,
+        ]
+        completed = subprocess.run(
+            command, capture_output=True, text=True, timeout=300
+        )
+        if completed.returncode != 0:
+            details = (completed.stderr or "FFmpeg could not process this video.")[-1500:]
+            raise RuntimeError(details)
+
+        whisper = load_whisper()
+        segments, info = whisper.transcribe(audio_path)
+        transcript = " ".join(
+            segment.text.strip() for segment in segments
+            if segment.text.strip()
+        ).strip()
+        return transcript, info.language
+    finally:
+        if video_path:
+            Path(video_path).unlink(missing_ok=True)
+        if audio_path:
+            Path(audio_path).unlink(missing_ok=True)
+
+
 def show_result(result, model_name):
     sentiment = result["sentiment"]
     confidence = result["confidence"]
@@ -166,7 +214,7 @@ with st.sidebar:
 
     page = st.radio(
         "Navigation",
-        ["Review Analyzer", "Audio Analyzer", "About"],
+        ["Review Analyzer", "Audio Analyzer", "Video Analyzer", "About"],
     )
 
     st.divider()
@@ -248,6 +296,62 @@ if page == "Audio Analyzer":
                 )
                 st.exception(error)
 
+# -------------------- PAGE: VIDEO ANALYZER --------------------
+elif page == "Video Analyzer":
+    st.markdown("## 🎬 Video sentiment analysis")
+    st.markdown(
+        '<p class="muted">Upload a video. ReviewSense extracts its audio, '
+        'transcribes spoken words, and predicts their sentiment.</p>',
+        unsafe_allow_html=True,
+    )
+    st.info(
+        "This feature analyzes spoken words only. It does not interpret facial "
+        "expressions, scenes, or visual emotion. Longer videos take more time to process."
+    )
+
+    video = st.file_uploader(
+        "Upload a video file",
+        type=["mp4", "mov", "avi", "mkv", "webm", "mpeg", "mpg"],
+        help="Choose a video with clear speech. Short videos are recommended.",
+        key="video_uploader",
+    )
+
+    if video is not None:
+        st.video(video)
+        if st.button("🎬 Transcribe video and analyze", type="primary"):
+            try:
+                with st.spinner(
+                    "Extracting audio and transcribing speech... "
+                    "The first run may take longer while Whisper downloads."
+                ):
+                    transcript, language = transcribe_video(
+                        video.getvalue(), Path(video.name).suffix or ".mp4"
+                    )
+
+                if not transcript:
+                    st.warning(
+                        "No speech was detected in this video. Try a video with clearer speech."
+                    )
+                else:
+                    st.markdown("### 📝 Video transcript")
+                    st.text_area(
+                        "Transcribed speech", value=transcript,
+                        height=180, disabled=True, key="video_transcript",
+                    )
+                    st.caption(f"Detected language: {language}")
+                    with st.spinner("Analyzing transcript sentiment..."):
+                        result = analyze(transcript, choice)
+                    st.markdown("## Analysis results")
+                    show_result(result, choice)
+            except subprocess.TimeoutExpired:
+                st.error("Video processing took too long. Try a shorter video.")
+            except Exception as error:
+                st.error(
+                    "Video processing failed. Check the video format, confirm FFmpeg "
+                    "is installed, and review the app logs for details."
+                )
+                st.exception(error)
+
 # -------------------- PAGE: ABOUT --------------------
 elif page == "About":
     st.markdown("## About ReviewSense")
@@ -263,10 +367,8 @@ elif page == "About":
           <h3>LSTM</h3>
           <p class="muted">A neural network that learns patterns in sequences
           of review tokens.</p>
-          <h3>Audio analysis</h3>
-          <p class="muted">Uploaded speech is transcribed using Whisper, then
-          the transcript is passed to the selected sentiment model. This version
-          does not analyze vocal tone or facial expressions.</p>
+          <h3>Audio and video analysis</h3>
+          <p class="muted">Audio recordings and audio extracted from uploaded videos are transcribed using Whisper, then the transcript is passed to the selected sentiment model. This version does not analyze vocal tone, facial expressions, or visual scenes.</p>
           <h3>Limitations</h3>
           <p class="muted">Predictions are estimates. Sarcasm, mixed opinions,
           transcription errors, and unusual wording can reduce reliability.</p>
