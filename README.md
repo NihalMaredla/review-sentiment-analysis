@@ -1,19 +1,19 @@
-# ReviewSense --- Amazon Review Sentiment Analysis
 
-ReviewSense is a sentiment-analysis web application that classifies text
-as **Positive**, **Neutral**, or **Negative**. It combines traditional
-machine learning and deep learning with speech transcription, allowing
-users to analyze written reviews, audio recordings, and videos
-containing speech.
+# ReviewSense — Amazon Review Sentiment Analysis
 
-**Live demo:**
-https://review-sentiment-analysis-hvpuc3cc3dg2tpkauyovl.streamlit.app/\
-**Repository:**
-https://github.com/NihalMaredla/review-sentiment-analysis
+[![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-LSTM-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
+[![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Scikit--learn-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?logo=streamlit)](https://review-sentiment-analysis-hvpuc3cc3dg2tpkauyovl.streamlit.app/)
 
-> Note: Audio and video analysis classify the transcribed words. They do
-> not detect emotion from vocal tone, facial expressions, or visual
-> scenes.
+**ReviewSense** is a sentiment-analysis web application that classifies text as **Positive**, **Neutral**, or **Negative**. It combines traditional machine learning and deep learning with speech transcription, allowing users to analyze written reviews, audio recordings, and videos containing speech.
+
+**🚀 Live Demo:** [Open ReviewSense](https://review-sentiment-analysis-hvpuc3cc3dg2tpkauyovl.streamlit.app/)
+
+**📂 Repository:** [View the source code on GitHub](https://github.com/NihalMaredla/review-sentiment-analysis)
+
+> **Note:** Audio and video analysis classify the transcribed words. They do not detect emotion from vocal tone, facial expressions, or visual scenes.
 
 ## Features
 
